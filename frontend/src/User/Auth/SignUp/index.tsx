@@ -1,9 +1,9 @@
 import React from 'react'
 import Layout from '../Layout'
-import {Title} from '../Shared'
+import { Title } from '../Shared'
 import Field from "Shared/Field"
 import Button from 'Shared/Button'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import routes from 'routes'
 import style from './style.module.scss'
 
@@ -19,6 +19,10 @@ const ThanksPage = () =>
 export default () => {
   const [registered, setRegistered] = React.useState(false)
 
+  const register = () => {
+    console.log('here')
+  }
+
   if (registered)
     return <ThanksPage />
 
@@ -30,7 +34,7 @@ export default () => {
     <Field label='Password' type='password' />
     <Field label='Confirm Password' type='password' />
     <div className={style.buttons}>
-      <Button onClick={() => setRegistered(true)} className={style.button} primary shadow>Register</Button>
+      <Button onClick={() => register()} className={style.button} primary shadow>Register</Button>
       <div className={style.center}>
         <Link to={routes.auth.logIn()} className={style.textButton}>Log in</Link>
       </div>
