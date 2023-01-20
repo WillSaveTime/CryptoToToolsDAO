@@ -1,25 +1,33 @@
-import express from "express";
-import mongoose from "mongoose";
-import cors from 'cors';
-import bodyParser from 'body-parser'
-import UserRoute from './routes/UserRoute.js'
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const passport = require('passport');
+const config = require('./db');
 
-const app = express();
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(cors())
-app.use(bodyParser.json())
+const users = require('./routes/user');
 
-mongoose.connect('mongodb://127.0.0.1::27017/cryptoDAO',{
+mongoose.connect(config.DB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
+}).then(() => { console.log('Database is connected') },
+    err => { console.log('Can not connect to the database' + err) }
+);
+
+const app = express();
+app.use(passport.initialize());
+require('./passport')(passport);
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.use('/api/users', users);
+
+app.get('/', function (req, res) {
+    res.send('hello');
 });
 
-const db = mongoose.connection;
-db.on('error', (error) => console.log(error));
-db.once('open', () => console.log('Database Connected...'));
- 
-app.use(cors());
-app.use(express.json());
-app.use(UserRoute);
- 
-app.listen(5000, ()=> console.log('Server up and running...'));
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`Server is running on PORT ${PORT}`);
+});
