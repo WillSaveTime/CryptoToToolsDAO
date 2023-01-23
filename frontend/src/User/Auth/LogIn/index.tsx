@@ -1,17 +1,20 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Layout from '../Layout'
-import {Title} from '../Shared'
+import { Title } from '../Shared'
 import Field from "Shared/Field"
 import Button from 'Shared/Button'
 import routes from 'routes'
 import style from './style.module.scss'
 
-export default () =>
-  <Layout>
+export default () => {
+  const [email, setEmail] = React.useState('')
+  const [password, setPassword]=  React.useState('')
+
+  return <Layout>
     <Title>Login</Title>
-    <Field label='Email' />
-    <Field label='Password' type='password' />
+    <Field label='Email' value={email} setValue={(str: string) => setEmail(str)} />
+    <Field label='Password' type='password' value={password} setValue={(str: string) => setPassword(str)} />
     <div className={style.forgot}>Forgot passport?</div>
     <div className={style.buttons}>
       <Button component={Link} to={routes.root()} className={style.button} primary shadow>Login</Button>
@@ -23,3 +26,5 @@ export default () =>
       </Link>
     </div>
   </Layout>
+}
+

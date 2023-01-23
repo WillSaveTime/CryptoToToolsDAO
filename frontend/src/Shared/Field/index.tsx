@@ -8,25 +8,29 @@ type Props = {
   label?: string
   error?: string
   type?: string
+  value?: string
+  setValue: (val: string) => void
 }
 
-export default ({label, error, type = 'text'}: Props) => {
+export default ({label, error, type = 'text', value, setValue}: Props) => {
   const [localType, setLocalType] = React.useState(type)
 
-  return <label className={style.wrap}>
-    {label && <div className={style.label}>{label}</div>}
-    <div className={style.inputWrap}>
-      {
-        type === 'password' &&
-        <img
-          className={style.icon}
-          src={localType === 'password' ? iconNoEye : iconEye}
-          onClick={() => setLocalType(localType === 'password' ? 'text' : 'password')}
-          alt=''
-        />
-      }
-      <input type={localType} className={cn(style.input, error && style.hasError)}/>
-    </div>
-    {error && <div className={style.error}>{error}</div>}
-  </label>
+  return (
+    <label className={style.wrap}>
+      {label && <div className={style.label}>{label}</div>}
+      <div className={style.inputWrap}>
+        {
+          type === 'password' &&
+          <img
+            className={style.icon}
+            src={localType === 'password' ? iconNoEye : iconEye}
+            onClick={() => setLocalType(localType === 'password' ? 'text' : 'password')}
+            alt=''
+          />
+        }
+        <input type={localType} value={value} onChange={(e: any) => setValue(e.target.value)} className={cn(style.input, error && style.hasError)} />
+      </div>
+      {error && <div className={style.error}>{error}</div>}
+    </label>
+  )
 }

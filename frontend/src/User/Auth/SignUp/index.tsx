@@ -17,10 +17,39 @@ const ThanksPage = () =>
   </Layout>
 
 export default () => {
-  const [registered, setRegistered] = React.useState(false)
+  const [registered, setRegistered] = React.useState(false);
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('')
+  const [email, setEmail] = React.useState('')
+  const [password, setPassword] = React.useState('')
+  const [conPassword, setConPassword] = React.useState('')
 
-  const register = () => {
-    console.log('here')
+  const register = (): {} | void => {
+    const info = {
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+      password_confirm: conPassword
+    }
+
+    fetch('/api/users/register', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-TYpe': 'application/json'
+      },
+      body: JSON.stringify(info)
+    })
+      .then((response) => {
+        console.log(response.status)
+        return response.json()
+      })
+      .then((data) => {
+        Object.keys(data).forEach((key, index) => {
+          console.log('key: ', key, data[key])
+        })
+      });
   }
 
   if (registered)
@@ -28,11 +57,11 @@ export default () => {
 
   return <Layout>
     <Title>Register</Title>
-    <Field label='First Name' />
-    <Field label='Last Name' />
-    <Field label='Email' type='email' />
-    <Field label='Password' type='password' />
-    <Field label='Confirm Password' type='password' />
+    <Field label='First Name' value={firstName} setValue={(str: string) => setFirstName(str)} />
+    <Field label='Last Name' value={lastName} setValue={(str: string) => setLastName(str)} />
+    <Field label='Email' type='email' value={email} setValue={(str: string) => setEmail(str)} />
+    <Field label='Password' type='password' value={password} setValue={(str: string) => setPassword(str)} />
+    <Field label='Confirm Password' type='password' value={conPassword} setValue={(str: string) => setConPassword(str)} />
     <div className={style.buttons}>
       <Button onClick={() => register()} className={style.button} primary shadow>Register</Button>
       <div className={style.center}>
