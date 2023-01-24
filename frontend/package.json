@@ -24,6 +24,7 @@
     "react-scripts": "^5.0.1",
     "react-toastify": "^9.1.1",
     "redux-devtools-extension": "^2.13.9",
+    "remote-redux-devtools": "^0.5.16",
     "sass": "^1.26.6",
     "typescript": "~3.8.3"
   },
