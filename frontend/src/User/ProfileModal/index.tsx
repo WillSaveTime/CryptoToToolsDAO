@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Redirect } from 'react-router-dom'
 import Modal from 'Shared/Modal'
 import Button from 'Shared/Button'
 import Checkbox from 'Shared/Checkbox'
 import EmailModal from 'User/EmailModal'
 import PasswordModal from 'User/PasswordModal'
-import { Link } from 'react-router-dom'
 import avatar from "assets/images/avatar.png"
 import routes from 'routes'
 import style from './style.module.scss'

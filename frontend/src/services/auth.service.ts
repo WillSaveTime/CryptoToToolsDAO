@@ -55,11 +55,11 @@ export const register = async (
 }
 
 export const logout = () => {
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
 }
 
 export const getCurrentUser = () => {
-    const userStr = localStorage.getItem('user');
+    const userStr = sessionStorage.getItem('user');
     if (userStr) return JSON.parse(userStr);
 
     return null;

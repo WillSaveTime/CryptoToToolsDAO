@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import Layout from '../Layout'
 import { Title } from '../Shared'
@@ -15,11 +15,11 @@ export default () => {
   const [logined, setLogined] = useState(false);
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  
+
   const handleLogin = async () => {
     const res: any = await login(email, password);
     if(res.success) {
-      localStorage.setItem('user', JSON.stringify(res));
+      sessionStorage.setItem('user', JSON.stringify(res));
       setLogined(true);
     } else {
       toast.error('Email or password is not correct!');

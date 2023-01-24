@@ -2085,6 +2085,13 @@
     "@types/prop-types" "*"
     "csstype" "^2.2.0"
 
+"@types/remote-redux-devtools@^0.5.5":
+  "integrity" "sha512-Xuya1TegRPAe92+nnEeYpfufE/mtfN99+GH272edaoWohbMA+yP6r+wYqK4sq/fvmoUPtPHtwZR2Mkk+6uHeBQ=="
+  "resolved" "https://registry.npmjs.org/@types/remote-redux-devtools/-/remote-redux-devtools-0.5.5.tgz"
+  "version" "0.5.5"
+  dependencies:
+    "redux" "^4.0.0"
+
 "@types/resolve@1.17.1":
   "integrity" "sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw=="
   "resolved" "https://registry.npmjs.org/@types/resolve/-/resolve-1.17.1.tgz"
@@ -7981,7 +7988,7 @@
   "resolved" "https://registry.npmjs.org/redux-thunk/-/redux-thunk-2.4.2.tgz"
   "version" "2.4.2"
 
-"redux@^3.1.0 || ^4.0.0", "redux@^3.4.0 || ^4.0.0", "redux@^4", "redux@^4.2.0":
+"redux@^3.1.0 || ^4.0.0", "redux@^3.4.0 || ^4.0.0", "redux@^4", "redux@^4.0.0", "redux@^4.2.0":
   "integrity" "sha512-oSBmcKKIuIR4ME29/AeNUnl5L+hvBq7OaJWzaptTQJAntaPvxIJqfnjbaEiCzzaIz+XmVILfqAM3Ob0aXLPfjA=="
   "resolved" "https://registry.npmjs.org/redux/-/redux-4.2.0.tgz"
   "version" "4.2.0"

@@ -1,5 +1,6 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route, Redirect, withRouter } from 'react-router-dom'
+import { Router, Switch, Route, Redirect } from 'react-router-dom'
+import history from './history'
 import routes from 'routes'
 import LogIn from 'User/Auth/LogIn'
 import LogInWithNumio from 'User/Auth/LogInWithNumio'
@@ -12,11 +13,12 @@ import ActiveProjects from 'Pages/ActiveProjects'
 import Rewards from 'Pages/Rewards'
 import authHeader from 'services/auth-header'
 
-export const MyRouter = () => {
-  const authorization = authHeader().Authorization;
+export default () => {
+  const accessToken = authHeader().Authorization;
+  console.log(accessToken)
 
   return (
-    <Router>
+    <Router history={history}>
       <Switch>
         <Route path={routes.auth.root()} render={() =>
           <Switch>
@@ -25,8 +27,7 @@ export const MyRouter = () => {
             <Route path={routes.auth.signUp()} component={SignUp} />
           </Switch>
         } />
-        <Route render={() =>
-          authorization ? 
+        <Route render={() => accessToken ?
           <Layout>
             <Switch>
               <Route path={routes.root()} exact component={Home} />
@@ -41,4 +42,3 @@ export const MyRouter = () => {
     </Router>
   )
 }
-export default withRouter(MyRouter);

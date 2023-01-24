@@ -1,13 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
-// import devToolsEnhancer from 'remote-redux-devtools'
 import userReducer from './reducers/userReducer'
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
   },
-  // devTools: false,
-  // enhancers: [devToolsEnhancer({ realtime: true })],
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
