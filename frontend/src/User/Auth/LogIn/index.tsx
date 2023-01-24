@@ -8,6 +8,7 @@ import routes from 'routes'
 import style from './style.module.scss'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+
 import { login } from 'services/auth.service'
 
 export default () => {

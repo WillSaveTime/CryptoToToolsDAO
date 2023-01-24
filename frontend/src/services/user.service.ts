@@ -47,18 +47,25 @@ export const getAdminBoard = () => {
 
 
 export const changePassword = (
+    email: string,
     current_password: string,
     password: string,
     password_confirm: string,
 ) => {
     const info = {
+        email,
         current_password,
         password,
         password_confirm
     }
+    console.log(info)
     return fetch(API_URL + 'change-password', {
         method: 'POST',
-        headers: authHeader(),
+        headers: {
+            ...authHeader(),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify(info)
     })
     .then((response: any) => {

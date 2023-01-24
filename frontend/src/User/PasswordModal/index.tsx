@@ -6,6 +6,9 @@ import style from './style.module.scss'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
+import { RootState } from 'app/store'
+import { useSelector } from 'react-redux'
+
 import { changePassword } from 'services/user.service'
 
 type Props = {
@@ -13,19 +16,30 @@ type Props = {
 }
 
 export default ({ close }: Props) => {
+  const email = useSelector((state: RootState) => state.user.email)
+
   const [curPassword, setCurPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [ConPassword, setConPassword] = useState('')
-
   const handleClick = (): {} | void => {
     return changePassword(
+      email,
       curPassword,
       newPassword,
       ConPassword
     )
     .then((data) => {
+      if (Object.keys(data).indexOf("success") > -1) {
+        toast.success('Password has changed successfully!');
+        close();
+      } else {
+        Object.keys(data).forEach((key, index) => {
+          toast.warning(
+            data[key],
+          );
+        })
+      }
       console.log(data)
-      close();
     })
     .catch((error) => toast.error(error));
   }

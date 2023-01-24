@@ -98,7 +98,7 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/change-password', passport.authenticate('jwt', { session: false }), (req, res) => {
-
+    console.log(req.body)
     const { errors, isValid } = validateChangePassword(req.body);
 
     if (!isValid) {
@@ -106,7 +106,8 @@ router.post('/change-password', passport.authenticate('jwt', { session: false })
     }
 
     const email = req.body.email;
-    const password = req.body.password;
+    const password = req.body.current_password;
+    const newpassword = req.body.password;
 
     User.findOne({ email })
         .then(user => {
@@ -115,23 +116,18 @@ router.post('/change-password', passport.authenticate('jwt', { session: false })
                 return res.status(404).json(errors);
             }
             bcrypt.compare(password, user.password)
-                .then(isMatch => {
+                .then((isMatch)=> {
                     if (isMatch) {
-                        const payload = {
-                            id: user.id,
-                            firstName: user.firstName,
-                            lastName: user.lastName
-                        }
-                        jwt.sign(payload, 'secret', {
-                            expiresIn: 3600
-                        }, (err, token) => {
-                            if (err) console.error('There is some error in token', err);
-                            else {
-                                res.json({
-                                    success: true,
-                                    token: `Bearer ${token}`
-                                });
-                            }
+                        bcrypt.genSalt(10, (err, salt) =>
+                            bcrypt.hash(newpassword, salt, (err, hash) => {
+                                if (err) console.error('There was an error', err);
+                                user.password = hash;
+                                user.save();
+                            })
+                        );
+                        res.json({
+                            success: true,
+                            password: 'successfully change password'
                         });
                     }
                     else {
