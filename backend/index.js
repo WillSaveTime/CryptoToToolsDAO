@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const config = require('./db');
-
+const cors = require('cors');
 const users = require('./routes/user');
 
 mongoose.connect(config.DB, {
@@ -19,7 +19,9 @@ require('./passport')(passport);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
+app.use(cors({
+    origin: '*'
+}));
 app.use('/api/users', users);
 
 app.get('/', function (req, res) {

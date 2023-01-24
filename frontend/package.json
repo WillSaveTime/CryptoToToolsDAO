@@ -14,12 +14,13 @@
     "@types/react-dom": "^16.9.0",
     "@types/react-router-dom": "^5.1.5",
     "classnames": "^2.2.6",
+    "http-proxy-middleware": "^2.0.6",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-minimal-pie-chart": "^8.0.1",
-    "react-notifications": "^1.7.4",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1",
+    "react-scripts": "^5.0.1",
+    "react-toastify": "^9.1.1",
     "sass": "^1.26.6",
     "typescript": "~3.8.3"
   },
@@ -32,6 +33,9 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "exclude": [
+    "src/setupProxy.ts"
+  ],
   "browserslist": {
     "production": [
       ">0.2%",
