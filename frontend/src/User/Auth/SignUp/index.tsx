@@ -6,13 +6,16 @@ import Button from 'Shared/Button'
 import { Link } from 'react-router-dom'
 import routes from 'routes'
 import style from './style.module.scss'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const ThanksPage = () =>
   <Layout className={style.thanksPage}>
     <Title>Thank you for creating an account and joining the DAO!</Title>
     <div className={style.verifyText}>Please verify your email to complete registration to login.</div>
     <div className={style.buttons}>
-      <Button component={Link} to={routes.root()} className={style.button} primary shadow>Log in</Button>
+      <Button component={Link} to={routes.auth.logIn()} className={style.button} primary shadow>Log in</Button>
     </div>
   </Layout>
 
@@ -37,18 +40,25 @@ export default () => {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
-        'Content-TYpe': 'application/json'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(info)
     })
       .then((response) => {
-        console.log(response.status)
         return response.json()
       })
       .then((data) => {
-        Object.keys(data).forEach((key, index) => {
-          console.log('key: ', key, data[key])
-        })
+        if (Object.keys(data).indexOf("_id") < 0) {
+          Object.keys(data).forEach((key, index) => {
+            toast.warning(
+              data[key],
+            );
+          })
+        } else {
+          setRegistered(true)
+        }
+      }).catch((err) => {
+        toast.error(err);
       });
   }
 
@@ -68,5 +78,6 @@ export default () => {
         <Link to={routes.auth.logIn()} className={style.textButton}>Log in</Link>
       </div>
     </div>
+    <ToastContainer />
   </Layout>
 }
