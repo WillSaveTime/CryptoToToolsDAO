@@ -29,26 +29,17 @@ export default () => {
   const [password, setPassword] = React.useState('')
   const [conPassword, setConPassword] = React.useState('')
 
-  const handleRegister = (): {} | void => {
-    register(
-      firstName,
-      lastName,
-      email,
-      password,
-      conPassword
-    ).then((data) => {
-      if (Object.keys(data).indexOf("_id") < 0) {
-        Object.keys(data).forEach((key, index) => {
-          toast.warning(
-            data[key],
-          );
-        })
-      } else {
-        setRegistered(true)
-      }
-    }).catch((err) => {
-      toast.error(err);
-    });
+  const handleRegister = async () => {
+    const res: any = await register(firstName, lastName, email, password, conPassword);
+    if (res._id) {
+      setRegistered(true)
+    } else {
+      Object.keys(res).forEach((key, index) => {
+        toast.warning(
+          res[key],
+        );
+      })
+    }
   }
 
   if (registered)

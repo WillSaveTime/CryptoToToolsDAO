@@ -1,6 +1,6 @@
 const API_URL = '/api/users/';
 
-export const login = (
+export const login = async (
     email: string,
     password: string
 ) => {
@@ -8,17 +8,23 @@ export const login = (
         email,
         password
     }
-    return fetch(API_URL + 'login', {
+    let result;
+    await fetch(API_URL + 'login', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(info)
-    });
+    }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        result = data;
+    }).catch((err) => result = err);
+    return result;
 }
 
-export const register = (
+export const register = async (
     firstName: string,
     lastName: string,
     email: string,
@@ -32,25 +38,29 @@ export const register = (
         password,
         password_confirm
     }
-    return fetch(API_URL + 'register', {
+    let result;
+    await fetch(API_URL + 'register', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(info)
-    })
-    .then((response: any) => {
+    }).then((response) => {
         return response.json();
-    });
+    }).then((data) => {
+        result = data;
+    }).catch((err) => result = err);
+    return result;
 }
+
 export const logout = () => {
     localStorage.removeItem('user');
 }
 
 export const getCurrentUser = () => {
     const userStr = localStorage.getItem('user');
-    if(userStr) return JSON.parse(userStr);
+    if (userStr) return JSON.parse(userStr);
 
     return null;
 }

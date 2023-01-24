@@ -26,7 +26,7 @@ export default () => {
             <Route path={routes.auth.signUp()} component={SignUp} />
           </Switch>
         } />
-        <Route render={() => authorization ?
+        <Route render={() =>
           <Layout>
             <Switch>
               <Route path={routes.root()} exact component={Home} />
@@ -35,8 +35,9 @@ export default () => {
               <Route path={routes.activeProjects()} exact component={ActiveProjects} />
               <Route path={routes.rewards()} exact component={Rewards} />
             </Switch>
-          </Layout> : <Redirect to={routes.auth.logIn()} />
+          </Layout>
         } />
+        <Redirect to={authorization ? routes.root() : routes.auth.logIn()} />
       </Switch>
     </Router>
   )

@@ -15,23 +15,15 @@ export default () => {
   const [logined, setLogined] = useState(false);
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const handleLogin = (): {} | void => {
-    login(
-      email,
-      password
-    ).then((response) => {
-      return response.json();
-    })
-      .then((data) => {
-        if (Object.keys(data).indexOf('success') > -1) {
-          localStorage.setItem('user', JSON.stringify(data));
-          setLogined(true)
-        } else {
-          Object.keys(data).forEach((key) => {
-            toast.error(data[key]);
-          });
-        }
-      }).catch((err) => toast.error(err));
+  
+  const handleLogin = async () => {
+    const res: any = await login(email, password);
+    if(res.success) {
+      localStorage.setItem('user', JSON.stringify(res));
+      setLogined(true);
+    } else {
+      toast.error('Email or password is not correct!');
+    }
   }
 
   if(logined) {
