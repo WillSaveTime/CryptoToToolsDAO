@@ -1,18 +1,32 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {Link} from "react-router-dom"
 import ProfileModal from 'User/ProfileModal'
 import routes from "routes"
 import logo from "assets/images/logo.png"
 import avatar from "assets/images/avatar.png"
 import style from './style.module.scss'
+import { getUserBoard } from 'services/user.service'
 
 export default () => {
   const [modalOpen, setModalOpen] = React.useState(false)
+  const [currentUser, setCurrentUser] = React.useState({
+    id: null,
+    firstName: null,
+    lastName: null,
+    email: null
+  })
+
+  useEffect(() => {
+    getUserBoard()
+    .then((data) => {
+      setCurrentUser(data);
+    })
+  }, [modalOpen])
 
   return <>
     {
       modalOpen &&
-      <ProfileModal close={() => setModalOpen(false)}/>
+      <ProfileModal close={() => setModalOpen(false)} currentUser={currentUser}/>
     }
     <div className={style.topBar}>
       <Link className={style.logo} to={routes.root}>
@@ -20,8 +34,8 @@ export default () => {
       </Link>
       <div className={style.user} onClick={() => setModalOpen(true)}>
         <div>
-          <div className={style.name}>Robert Chen</div>
-          <div className={style.email}>robchen@gmail.com</div>
+          <div className={style.name}>{currentUser.firstName} {currentUser.lastName}</div>
+          <div className={style.email}>{currentUser.email}</div>
         </div>
         <div className={style.avatar} style={{backgroundImage: `url(${avatar})`}}/>
       </div>

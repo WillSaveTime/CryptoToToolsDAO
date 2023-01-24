@@ -5,20 +5,21 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const validateRegisterInput = require('../validation/register');
 const validateLoginInput = require('../validation/login');
+const validateChangePassword = require('../validation/change-password');
 
 const User = require('../models/User');
 
-router.post('/register', function(req, res) {
+router.post('/register', function (req, res) {
 
     const { errors, isValid } = validateRegisterInput(req.body);
 
-    if(!isValid) {
+    if (!isValid) {
         return res.status(400).json(errors);
     }
     User.findOne({
         email: req.body.email
     }).then(user => {
-        if(user) {
+        if (user) {
             return res.status(400).json({
                 email: 'Email already exists'
             });
@@ -30,19 +31,19 @@ router.post('/register', function(req, res) {
                 email: req.body.email,
                 password: req.body.password
             });
-            
+
             bcrypt.genSalt(10, (err, salt) => {
-                if(err) console.error('There was an error', err);
+                if (err) console.error('There was an error', err);
                 else {
                     bcrypt.hash(newUser.password, salt, (err, hash) => {
-                        if(err) console.error('There was an error', err);
+                        if (err) console.error('There was an error', err);
                         else {
                             newUser.password = hash;
                             newUser
                                 .save()
                                 .then(user => {
                                     res.json(user)
-                                }); 
+                                });
                         }
                     });
                 }
@@ -55,51 +56,96 @@ router.post('/login', (req, res) => {
 
     const { errors, isValid } = validateLoginInput(req.body);
 
-    if(!isValid) {
+    if (!isValid) {
         return res.status(400).json(errors);
     }
 
     const email = req.body.email;
     const password = req.body.password;
 
-    User.findOne({email})
+    User.findOne({ email })
         .then(user => {
-            if(!user) {
+            if (!user) {
                 errors.email = 'User not found'
                 return res.status(404).json(errors);
             }
             bcrypt.compare(password, user.password)
-                    .then(isMatch => {
-                        if(isMatch) {
-                            const payload = {
-                                id: user.id,
-                                firstName: user.firstName,
-                                lastName: user.lastName
+                .then(isMatch => {
+                    if (isMatch) {
+                        const payload = {
+                            id: user.id,
+                            firstName: user.firstName,
+                            lastName: user.lastName
+                        }
+                        jwt.sign(payload, 'secret', {
+                            expiresIn: 3600
+                        }, (err, token) => {
+                            if (err) console.error('There is some error in token', err);
+                            else {
+                                res.json({
+                                    success: true,
+                                    token: `Bearer ${token}`
+                                });
                             }
-                            jwt.sign(payload, 'secret', {
-                                expiresIn: 3600
-                            }, (err, token) => {
-                                if(err) console.error('There is some error in token', err);
-                                else {
-                                    res.json({
-                                        success: true,
-                                        token: `Bearer ${token}`
-                                    });
-                                }
-                            });
-                        }
-                        else {
-                            errors.password = 'Incorrect Password';
-                            return res.status(400).json(errors);
-                        }
-                    });
+                        });
+                    }
+                    else {
+                        errors.password = 'Incorrect Password';
+                        return res.status(400).json(errors);
+                    }
+                });
         });
 });
 
+router.post('/change-password', passport.authenticate('jwt', { session: false }), (req, res) => {
+
+    const { errors, isValid } = validateChangePassword(req.body);
+
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+
+    const email = req.body.email;
+    const password = req.body.password;
+
+    User.findOne({ email })
+        .then(user => {
+            if (!user) {
+                errors.email = 'User not found'
+                return res.status(404).json(errors);
+            }
+            bcrypt.compare(password, user.password)
+                .then(isMatch => {
+                    if (isMatch) {
+                        const payload = {
+                            id: user.id,
+                            firstName: user.firstName,
+                            lastName: user.lastName
+                        }
+                        jwt.sign(payload, 'secret', {
+                            expiresIn: 3600
+                        }, (err, token) => {
+                            if (err) console.error('There is some error in token', err);
+                            else {
+                                res.json({
+                                    success: true,
+                                    token: `Bearer ${token}`
+                                });
+                            }
+                        });
+                    }
+                    else {
+                        errors.password = 'Incorrect Password';
+                        return res.status(400).json(errors);
+                    }
+                });
+        });
+});
 router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) => {
     return res.json({
         id: req.user.id,
-        firstName: req.user.lastName,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
         email: req.user.email
     });
 });

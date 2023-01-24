@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import Layout from '../Layout'
 import { Title } from '../Shared'
@@ -8,32 +8,35 @@ import routes from 'routes'
 import style from './style.module.scss'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import { login } from 'services/auth.service'
 
 export default () => {
-  const [logined, setLogined] = useState(false)
+  const [logined, setLogined] = useState(false);
   const [email, setEmail] = useState('')
-  const [password, setPassword]=  useState('')
-  const login = (): {} | void => {
-    const info = {
+  const [password, setPassword] = useState('')
+  const handleLogin = (): {} | void => {
+    login(
       email,
       password
-    }
-    fetch('/api/users/login', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(info)
-    }).then((response) => {
+    ).then((response) => {
       return response.json();
-    }).then((data) => {
-      
-    }).catch((err) => TransformStream)
-    setLogined(true)
+    })
+      .then((data) => {
+        if (Object.keys(data).indexOf('success') > -1) {
+          localStorage.setItem('user', JSON.stringify(data));
+          setLogined(true)
+        } else {
+          Object.keys(data).forEach((key) => {
+            toast.error(data[key]);
+          });
+        }
+      }).catch((err) => toast.error(err));
   }
-  if (logined)
-    return <Redirect to="/"/>
+
+  if(logined) {
+    return <Redirect to={routes.root()}/>
+  }
+
 
   return <Layout>
     <Title>Login</Title>
@@ -41,7 +44,7 @@ export default () => {
     <Field label='Password' type='password' value={password} setValue={(str: string) => setPassword(str)} />
     <div className={style.forgot}>Forgot passport?</div>
     <div className={style.buttons}>
-      <Button onClick={() => login()} className={style.button} primary shadow>Login</Button>
+      <Button onClick={() => handleLogin()} className={style.button} primary shadow>Login</Button>
       <Button component={Link} to={routes.auth.logInWithNumio()} className={style.button} primary outline shadow>
         Login with Numio
       </Button>
@@ -49,6 +52,7 @@ export default () => {
         <div className={style.textButton}>Create account</div>
       </Link>
     </div>
+    <ToastContainer />
   </Layout>
 }
 

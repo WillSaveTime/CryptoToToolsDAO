@@ -9,6 +9,8 @@ import style from './style.module.scss'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
+import { register } from 'services/auth.service'
+
 
 const ThanksPage = () =>
   <Layout className={style.thanksPage}>
@@ -27,39 +29,26 @@ export default () => {
   const [password, setPassword] = React.useState('')
   const [conPassword, setConPassword] = React.useState('')
 
-  const register = (): {} | void => {
-    const info = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: password,
-      password_confirm: conPassword
-    }
-
-    fetch('/api/users/register', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(info)
-    })
-      .then((response) => {
-        return response.json()
-      })
-      .then((data) => {
-        if (Object.keys(data).indexOf("_id") < 0) {
-          Object.keys(data).forEach((key, index) => {
-            toast.warning(
-              data[key],
-            );
-          })
-        } else {
-          setRegistered(true)
-        }
-      }).catch((err) => {
-        toast.error(err);
-      });
+  const handleRegister = (): {} | void => {
+    register(
+      firstName,
+      lastName,
+      email,
+      password,
+      conPassword
+    ).then((data) => {
+      if (Object.keys(data).indexOf("_id") < 0) {
+        Object.keys(data).forEach((key, index) => {
+          toast.warning(
+            data[key],
+          );
+        })
+      } else {
+        setRegistered(true)
+      }
+    }).catch((err) => {
+      toast.error(err);
+    });
   }
 
   if (registered)
@@ -73,7 +62,7 @@ export default () => {
     <Field label='Password' type='password' value={password} setValue={(str: string) => setPassword(str)} />
     <Field label='Confirm Password' type='password' value={conPassword} setValue={(str: string) => setConPassword(str)} />
     <div className={style.buttons}>
-      <Button onClick={() => register()} className={style.button} primary shadow>Register</Button>
+      <Button onClick={() => handleRegister()} className={style.button} primary shadow>Register</Button>
       <div className={style.center}>
         <Link to={routes.auth.logIn()} className={style.textButton}>Log in</Link>
       </div>
