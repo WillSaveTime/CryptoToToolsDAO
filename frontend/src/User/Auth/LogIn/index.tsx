@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link, Redirect } from 'react-router-dom'
+import history from 'Router/history'
 import Layout from '../Layout'
 import { Title } from '../Shared'
 import Field from "Shared/Field"
@@ -8,11 +9,13 @@ import routes from 'routes'
 import style from './style.module.scss'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
-
 import { login } from 'services/auth.service'
+type Props = {
+  setAccessToken: (val: string) => void
+}
 
-export default () => {
-  const [logined, setLogined] = useState(false);
+export default ({ setAccessToken }: Props) => {
+  const [logined, setLogined] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -20,16 +23,14 @@ export default () => {
     const res: any = await login(email, password);
     if(res.success) {
       sessionStorage.setItem('user', JSON.stringify(res));
+      setAccessToken(res.token);
       setLogined(true);
     } else {
       toast.error('Email or password is not correct!');
     }
   }
-
-  if(logined) {
+  if (logined) 
     return <Redirect to={routes.root()}/>
-  }
-
 
   return <Layout>
     <Title>Login</Title>

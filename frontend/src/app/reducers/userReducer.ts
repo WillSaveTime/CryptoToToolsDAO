@@ -5,12 +5,14 @@ export interface UserState {
   firstName: string,
   lastName: string,
   email: string,
+  accessToken: string,
 }
 
 const initialState: UserState = {
   firstName: '',
   lastName: '',
   email: '',
+  accessToken: '',
 }
 
 export const userSlice = createSlice({
@@ -29,10 +31,13 @@ export const userSlice = createSlice({
       state.lastName = action.payload.lastName
       state.email = action.payload.email
     },
+    setAccessToken: (state, action: PayloadAction<string>) =>{
+      state.accessToken = action.payload
+    }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { getUserInfo, setUserInfo } = userSlice.actions
+export const { getUserInfo, setUserInfo, setAccessToken } = userSlice.actions
 
 export default userSlice.reducer
