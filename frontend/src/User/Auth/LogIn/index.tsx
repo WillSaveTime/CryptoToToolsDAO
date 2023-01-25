@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import Layout from '../Layout'
 import { Title } from '../Shared'
@@ -14,9 +14,18 @@ type Props = {
 }
 
 export default ({ setAccessToken }: Props) => {
+
   const [logined, setLogined] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isMetamaskInstalled, setIsMetamaskInstalled] = useState<boolean>(false);
+  const [account, setAccount] = useState<string | null>(null);
+
+  useEffect(() => {
+    if((window as any).ethereum) {
+      setIsMetamaskInstalled(true)
+    }
+  }, [])
 
   const handleLogin = async () => {
     const res: any = await login(email, password);
@@ -28,6 +37,20 @@ export default ({ setAccessToken }: Props) => {
       toast.error('Email or password is not correct!');
     }
   }
+
+  const connectWallet = async () => {
+    (window as any).ethereum
+      .request({
+        method: "eth_requestAccounts",
+      })
+      .then((accounts: string[]) => {
+        setAccount(accounts[0]);
+      })
+      .catch((error: any) => {
+        alert(`Something went wrong: ${error}`);
+      })
+  }
+
   if (logined) 
     return <Redirect to={routes.root()}/>
 
@@ -38,8 +61,8 @@ export default ({ setAccessToken }: Props) => {
     <div className={style.forgot}>Forgot passport?</div>
     <div className={style.buttons}>
       <Button onClick={() => handleLogin()} className={style.button} primary shadow>Login</Button>
-      <Button component={Link} to={routes.auth.logInWithNumio()} className={style.button} primary outline shadow>
-        Login with Numio
+      <Button onClick={() => connectWallet()} className={style.button} primary outline shadow>
+        Login with MetaMask
       </Button>
       <Link to={routes.auth.signUp()} className={style.center}>
         <div className={style.textButton}>Create account</div>
