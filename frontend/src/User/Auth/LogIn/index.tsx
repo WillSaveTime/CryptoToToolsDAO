@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Link, Redirect } from 'react-router-dom'
-import history from 'Router/history'
 import Layout from '../Layout'
 import { Title } from '../Shared'
 import Field from "Shared/Field"
