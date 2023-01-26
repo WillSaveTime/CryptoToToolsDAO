@@ -55,8 +55,7 @@ export default ({ setAccessToken }: Props) => {
   }
 
   const connectWallet = async (): Promise<void> => {
-    console.log((window as any).ethereum.networkVersion)
-    await (window as any).ethereum
+    (window as any).ethereum
       .request({
         method: "eth_requestAccounts",
       })
