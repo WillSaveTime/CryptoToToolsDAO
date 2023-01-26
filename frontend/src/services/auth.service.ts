@@ -64,3 +64,19 @@ export const getCurrentUser = () => {
 
     return null;
 }
+
+export const loginWithMetamask = async (account: string) => {
+    let nonce ;
+    await fetch(API_URL + `/${account}/nonce`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+    }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        nonce  = data;
+    }).catch((err) => err);
+    
+}

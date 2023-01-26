@@ -145,5 +145,4 @@ router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) =
         email: req.user.email
     });
 });
-
 module.exports = router;

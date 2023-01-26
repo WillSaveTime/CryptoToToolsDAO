@@ -7,25 +7,41 @@ import Button from 'Shared/Button'
 import routes from 'routes'
 import style from './style.module.scss'
 import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css'
 import { login } from 'services/auth.service'
+
+import { useDispatch } from 'react-redux'
+import { setWalletAddress } from 'app/reducers/userReducer'
+
 type Props = {
   setAccessToken: (val: string) => void
 }
 
 export default ({ setAccessToken }: Props) => {
-
-  const [logined, setLogined] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const dispatch = useDispatch();
+  const [logined, setLogined] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [isMetamaskInstalled, setIsMetamaskInstalled] = useState<boolean>(false);
   const [account, setAccount] = useState<string | null>(null);
 
   useEffect(() => {
     if((window as any).ethereum) {
-      setIsMetamaskInstalled(true)
+      setIsMetamaskInstalled(true);
     }
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    if(account){
+      let nonce = {
+        token: Math.floor(Math.random() * 1000000) + account
+      }
+      setAccessToken(nonce.token);
+      sessionStorage.setItem('user', JSON.stringify(nonce));
+      dispatch(setWalletAddress(account));
+      setLogined(true);
+    }
+  }, [account])
 
   const handleLogin = async () => {
     const res: any = await login(email, password);
@@ -38,7 +54,7 @@ export default ({ setAccessToken }: Props) => {
     }
   }
 
-  const connectWallet = async () => {
+  const connectWallet = async (): Promise<void> => {
     (window as any).ethereum
       .request({
         method: "eth_requestAccounts",
@@ -47,7 +63,7 @@ export default ({ setAccessToken }: Props) => {
         setAccount(accounts[0]);
       })
       .catch((error: any) => {
-        alert(`Something went wrong: ${error}`);
+        toast.error(`Something went wrong: ${error}`);
       })
   }
 

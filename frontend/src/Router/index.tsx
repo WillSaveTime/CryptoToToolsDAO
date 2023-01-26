@@ -3,7 +3,7 @@ import { Router, Switch, Route, Redirect } from 'react-router-dom'
 import history from './history'
 import routes from 'routes'
 import LogIn from 'User/Auth/LogIn'
-import LogInWithNumio from 'User/Auth/LogInWithNumio'
+import LogInWithMetamask from 'User/Auth/LogInWithMetamask'
 import SignUp from 'User/Auth/SignUp'
 import Layout from 'Layout'
 import Home from 'Pages/Home'
@@ -14,7 +14,8 @@ import Rewards from 'Pages/Rewards'
 import authHeader from 'services/auth-header'
 
 export default () => {
-  const [accessToken, setAccessToken] = React.useState(authHeader().Authorization)  
+  const [accessToken, setAccessToken] = React.useState<string>(authHeader().Authorization) 
+  console.log(accessToken)
 
   return (
     <Router history={history}>
@@ -24,7 +25,7 @@ export default () => {
             <Route path={routes.auth.logIn()}>
               <LogIn setAccessToken={(str: string) => setAccessToken(str)}/>
             </Route>
-            <Route path={routes.auth.logInWithNumio()} component={LogInWithNumio} />
+            <Route path={routes.auth.logInWithNumio()} component={LogInWithMetamask} />
             <Route path={routes.auth.signUp()} component={SignUp} />
           </Switch>
         } />

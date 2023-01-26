@@ -9,18 +9,23 @@ import avatar from "assets/images/avatar.png"
 import routes from 'routes'
 import style from './style.module.scss'
 import * as AuthService from '../../services/auth.service'
+import {useDispatch} from 'react-redux'
+import { userLogout } from 'app/reducers/userReducer'
 
 type Props = {
   close: () => any,
-  currentUser?: any
+  currentUser?: any,
+  walletAddress?: any,
 }
 
-export default ({ close, currentUser }: Props) => {
+export default ({ close, currentUser, walletAddress }: Props) => {
+  const dispatch = useDispatch()
   const [logoutStatus, setLogoutStatus] = React.useState(false)
   const [openEmailModal, setOpenEmailModal] = React.useState(false)
   const [openPasswordModal, setOpenPasswordModal] = React.useState(false)
   const logout = () => {
     AuthService.logout();
+    dispatch(userLogout())
     setLogoutStatus(true)
   }
 
@@ -33,18 +38,31 @@ export default ({ close, currentUser }: Props) => {
       <Modal className={style.modal} close={close}>
         <div className={style.modalHeader}>
           <div className={style.modalAvatar} style={{ backgroundImage: `url(${avatar})` }} />
-          <div className={style.modalUserInfo}>
-            <div className={style.modalName}>{currentUser.firstName} {currentUser.lastName}</div>
-            <div className={style.modalEmail}>{currentUser.email}</div>
-            <div className={style.modalDate}>Since 07/01/2020</div>
-          </div>
+          {!walletAddress ? (
+            <div className={style.modalUserInfo}>
+              <div className={style.modalName}>{currentUser.firstName} {currentUser.lastName}</div>
+              <div className={style.modalEmail}>{currentUser.email}</div>
+              <div className={style.modalDate}>Since 07/01/2020</div>
+            </div>
+          ) : (
+            <div className={style.modalUserInfo}>
+              <div className={style.modalEmail}>{walletAddress.slice(0,4)}...{walletAddress.slice(-4)}</div>
+            </div>
+          )}
         </div>
-        <Button className={style.modalButton} light onClick={() => setOpenPasswordModal(true)}>
-          Change Password
-        </Button>
-        <Button className={style.modalButton} light onClick={() => setOpenEmailModal(true)}>
-          Change Email
-        </Button>
+        {
+          !walletAddress ?
+            (
+              <>
+                <Button className={style.modalButton} light onClick={() => setOpenPasswordModal(true)}>
+                  Change Password
+                </Button>
+                <Button className={style.modalButton} light onClick={() => setOpenEmailModal(true)}>
+                  Change Email
+                </Button>
+              </>
+            ) : ''
+        }
         <Button className={style.modalButton} light component={'label'}>
           <div>Dark Mode</div>
           <Checkbox />
