@@ -8,7 +8,7 @@ import PasswordModal from 'User/PasswordModal'
 import avatar from "assets/images/avatar.png"
 import routes from 'routes'
 import style from './style.module.scss'
-import * as AuthService from '../../services/auth.service'
+import * as AuthService from 'services/auth.service'
 import {useDispatch} from 'react-redux'
 import { userLogout } from 'app/reducers/userReducer'
 

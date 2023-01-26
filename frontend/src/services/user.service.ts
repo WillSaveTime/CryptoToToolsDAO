@@ -58,7 +58,6 @@ export const changePassword = (
         password,
         password_confirm
     }
-    console.log(info)
     return fetch(API_URL + 'change-password', {
         method: 'POST',
         headers: {

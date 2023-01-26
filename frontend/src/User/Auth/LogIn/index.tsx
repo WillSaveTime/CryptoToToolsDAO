@@ -26,13 +26,13 @@ export default ({ setAccessToken }: Props) => {
   const [account, setAccount] = useState<string | null>(null);
 
   useEffect(() => {
-    if((window as any).ethereum) {
+    if ((window as any).ethereum) {
       setIsMetamaskInstalled(true);
     }
   }, []);
 
   useEffect(() => {
-    if(account){
+    if (account) {
       let nonce = {
         token: Math.floor(Math.random() * 1000000) + account
       }
@@ -45,7 +45,7 @@ export default ({ setAccessToken }: Props) => {
 
   const handleLogin = async () => {
     const res: any = await login(email, password);
-    if(res.success) {
+    if (res.success) {
       sessionStorage.setItem('user', JSON.stringify(res));
       setAccessToken(res.token);
       setLogined(true);
@@ -55,7 +55,8 @@ export default ({ setAccessToken }: Props) => {
   }
 
   const connectWallet = async (): Promise<void> => {
-    (window as any).ethereum
+    console.log((window as any).ethereum.networkVersion)
+    await (window as any).ethereum
       .request({
         method: "eth_requestAccounts",
       })
@@ -64,11 +65,31 @@ export default ({ setAccessToken }: Props) => {
       })
       .catch((error: any) => {
         toast.error(`Something went wrong: ${error}`);
-      })
+      });
+    // check if the chain to connect to is installed
+    await (window as any).ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: '0x38' }], // chainId must be in hexadecimal numbers
+    }).catch(async (error: any) => {
+      if (error.code === 4902) {
+        await (window as any).ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainName: 'Smart Chain',
+              chainId: '0x38',
+              rpcUrls: ['https://bsc-dataseed.binance.org/']
+            }
+          ]
+        });
+      } else {
+        toast.error(`Something went wrong: ${error}`);
+      }
+    });
   }
 
-  if (logined) 
-    return <Redirect to={routes.root()}/>
+  if (logined)
+    return <Redirect to={routes.root()} />
 
   return <Layout>
     <Title>Login</Title>

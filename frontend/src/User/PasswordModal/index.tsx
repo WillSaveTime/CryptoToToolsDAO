@@ -39,7 +39,6 @@ export default ({ close }: Props) => {
           );
         })
       }
-      console.log(data)
     })
     .catch((error) => toast.error(error));
   }

@@ -23,13 +23,13 @@ export default () => {
     email: null
   })
   useEffect(() => {
-    console.log(walletAddress)
-    if (!walletAddress)
+    if (!walletAddress){
       getUserBoard()
         .then((data) => {
           setCurrentUser(data);
           dispatch(setUserInfo(data))
         })
+    }
   }, [modalOpen])
 
   return <>
