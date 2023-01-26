@@ -55,6 +55,10 @@ export default ({ setAccessToken }: Props) => {
   }
 
   const connectWallet = async (): Promise<void> => {
+    if (!isMetamaskInstalled) {
+      toast.error('Please install MetaMask!');
+      return
+    }
     (window as any).ethereum
       .request({
         method: "eth_requestAccounts",
@@ -75,7 +79,7 @@ export default ({ setAccessToken }: Props) => {
           method: 'wallet_addEthereumChain',
           params: [
             {
-              chainName: 'Smart Chain',
+              chainName: 'BNB Smart Chain',
               chainId: '0x38',
               rpcUrls: ['https://bsc-dataseed.binance.org/']
             }
