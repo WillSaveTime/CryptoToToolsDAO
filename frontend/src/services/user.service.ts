@@ -1,6 +1,6 @@
 import authHeader from "./auth-header";
 
-const API_URL = 'http://localhost:5000/api/users/';
+const API_URL = 'http://152.89.247.244:5000/api/users/';
 
 export const getPublicContent = () => {
     return fetch(API_URL + 'all', {

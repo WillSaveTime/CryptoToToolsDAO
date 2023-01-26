@@ -26,13 +26,13 @@ export default ({ setAccessToken }: Props) => {
   const [account, setAccount] = useState<string | null>(null);
 
   useEffect(() => {
-    if((window as any).ethereum) {
+    if ((window as any).ethereum) {
       setIsMetamaskInstalled(true);
     }
   }, []);
 
   useEffect(() => {
-    if(account){
+    if (account) {
       let nonce = {
         token: Math.floor(Math.random() * 1000000) + account
       }
@@ -45,7 +45,7 @@ export default ({ setAccessToken }: Props) => {
 
   const handleLogin = async () => {
     const res: any = await login(email, password);
-    if(res.success) {
+    if (res.success) {
       sessionStorage.setItem('user', JSON.stringify(res));
       setAccessToken(res.token);
       setLogined(true);
@@ -55,6 +55,10 @@ export default ({ setAccessToken }: Props) => {
   }
 
   const connectWallet = async (): Promise<void> => {
+    if (!isMetamaskInstalled) {
+      toast.error('Please install MetaMask!');
+      return
+    }
     (window as any).ethereum
       .request({
         method: "eth_requestAccounts",
@@ -67,8 +71,8 @@ export default ({ setAccessToken }: Props) => {
       })
   }
 
-  if (logined) 
-    return <Redirect to={routes.root()}/>
+  if (logined)
+    return <Redirect to={routes.root()} />
 
   return <Layout>
     <Title>Login</Title>
