@@ -33,7 +33,7 @@ export default () => {
     const res: any = await register(firstName, lastName, email, password, conPassword);
     if (res._id) {
       setRegistered(true)
-      verifyEmail(res._id, firstName, lastName, email)
+      const res1 = await verifyEmail(res._id, firstName, lastName, email)
     } else {
       Object.keys(res).forEach((key, index) => {
         toast.warning(

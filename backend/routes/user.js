@@ -3,11 +3,23 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+const nodemailer = require('nodemailer')
 const validateRegisterInput = require('../validation/register');
 const validateLoginInput = require('../validation/login');
 const validateChangePassword = require('../validation/change-password');
 
 const User = require('../models/User');
+
+const credentials = {
+    host: 'mail.privateemail.com',
+    port: 465,
+    secure: true,
+    auth: {
+        user: 'support@cryptotools.live',
+        pass: 'Token!23'
+    }
+}
+const transporter = nodemailer.createTransport(credentials)
 
 router.post('/register', function (req, res) {
 
@@ -69,8 +81,8 @@ router.post('/login', (req, res) => {
                 errors.email = 'User not found'
                 return res.status(404).json(errors);
             }
-            if(!user.verify) {
-                errors.verify = "You didn't verified User"
+            if (!user.verified) {
+                errors.verified = "You didn't verified User"
                 return res.status(404).json(errors)
             }
             bcrypt.compare(password, user.password)
@@ -119,7 +131,7 @@ router.post('/change-password', passport.authenticate('jwt', { session: false })
                 return res.status(404).json(errors);
             }
             bcrypt.compare(password, user.password)
-                .then((isMatch)=> {
+                .then((isMatch) => {
                     if (isMatch) {
                         bcrypt.genSalt(10, (err, salt) =>
                             bcrypt.hash(newpassword, salt, (err, hash) => {
@@ -153,24 +165,28 @@ router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) =
 router.post('/sendMail', (req, res) => {
     let message = {
         from: 'support@cryptotools.live',
-        to: 'cooker0910@gmail.com',
+        to: req.body.email,
         subject: 'Confirm your email',
-        html: `<h2>Congratulations ${req.body.firstName} ${req.body.lastName}! You have successfully registered.</h2><a href="http://152.89.247.244:5000/verify/${req.body.id}" target="_blank" style="cursor: pointer"><button style="display: inline-block; padding: 0.3em 1.2em; margin: 0 0.3em 0.3em 0; border-radius: 2em; border: none; box-sizing: border-box; text-decoration: none; font-weight: 300; color: #FFFFFF; background-color: #4ef18f; text-align: center; transition: all 0.2s;">Click To Verify</button></a>`
+        html: `<h2>Congratulations ${req.body.firstName} ${req.body.lastName}! You have successfully registered.</h2><a href="http://152.89.247.244:5000/api/users/verify?id=${req.body.id}" target="_blank" style="cursor: pointer"><button style="display: inline-block; padding: 0.3em 1.2em; margin: 0 0.3em 0.3em 0; border-radius: 2em; border: none; box-sizing: border-box; text-decoration: none; font-weight: 300; color: #FFFFFF; background-color: #4ef18f; text-align: center; transition: all 0.2s; cursor: pointer">Click To Verify</button></a>`
     }
     transporter.sendMail(message, async (err, info) => {
-        if (err) 
+        if (err) {
             console.log('error', err)
-        else 
+            return res.status(400).json(err)
+        } else {
             console.log('info', info)
+            return res.status(200).json(info)
+        }
     })
 });
 
-router.get(`/verify/${id}`, (req, res) => {
-    User.findByIdAndUpdate(id, {verify: true}, (err, docs) => {
-        if (err) 
+router.get('/verify/', (req, res) => {
+    User.findByIdAndUpdate(req.query.id, { verified: true }, (err, docs) => {
+        if (err)
             console.log('error', err)
-        else    
+        else
             console.log('docs', docs)
+        res.redirect('http://152.89.247.244:3000/auth/log_in')
     })
 })
 
