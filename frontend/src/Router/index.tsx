@@ -14,7 +14,7 @@ import Rewards from 'Pages/Rewards'
 import authHeader from 'services/auth-header'
 
 export default () => {
-  const [accessToken, setAccessToken] = React.useState<string>(authHeader().Authorization) 
+  const [accessToken, setAccessToken] = React.useState<string>(authHeader().Authorization)
   console.log(accessToken)
 
   return (
@@ -23,21 +23,21 @@ export default () => {
         <Route path={routes.auth.root()} render={() =>
           <Switch>
             <Route path={routes.auth.logIn()}>
-              <LogIn setAccessToken={(str: string) => setAccessToken(str)}/>
+              <LogIn setAccessToken={(str: string) => setAccessToken(str)} />
             </Route>
             <Route path={routes.auth.logInWithNumio()} component={LogInWithMetamask} />
             <Route path={routes.auth.signUp()} component={SignUp} />
           </Switch>
         } />
-        <Route render={() =>  accessToken ? <Layout>
-            <Switch>
-              <Route path={routes.root()} exact component={Home} />
-              <Route path={routes.proposals()} exact component={Proposals} />
-              <Route path={routes.votes()} exact component={Votes} />
-              <Route path={routes.activeProjects()} exact component={ActiveProjects} />
-              <Route path={routes.rewards()} exact component={Rewards} />
-            </Switch>
-          </Layout>: <Redirect to={routes.auth.logIn()} /> }/> 
+        <Route render={() => accessToken ? <Layout>
+          <Switch>
+            <Route path={routes.root()} exact component={Home} />
+            <Route path={routes.proposals()} exact component={Proposals} />
+            <Route path={routes.votes()} exact component={Votes} />
+            <Route path={routes.activeProjects()} exact component={ActiveProjects} />
+            <Route path={routes.rewards()} exact component={Rewards} />
+          </Switch>
+        </Layout> : <Redirect to={routes.auth.logIn()} />} />
       </Switch>
     </Router>
   )

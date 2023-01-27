@@ -54,6 +54,34 @@ export const register = async (
     return result;
 }
 
+export const verifyEmail = async (
+    id: string,
+    firstName: string,
+    lastName: string,
+    email: string
+) => {
+    const info = {
+        id: id,
+        firstName: firstName,
+        lastName: lastName,
+        email: email
+    }
+    let result;
+    await fetch(API_URL + 'sendMail', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(info)
+    }).then((res) => {
+        return res.json()
+    }).then((data) => {
+        result = data;
+    }).catch((err) => result = err)
+    return result;
+}
+
 export const logout = () => {
     sessionStorage.removeItem('user');
 }
@@ -66,7 +94,7 @@ export const getCurrentUser = () => {
 }
 
 export const loginWithMetamask = async (account: string) => {
-    let nonce ;
+    let nonce;
     await fetch(API_URL + `/${account}/nonce`, {
         method: 'GET',
         headers: {
@@ -76,7 +104,7 @@ export const loginWithMetamask = async (account: string) => {
     }).then((response) => {
         return response.json();
     }).then((data) => {
-        nonce  = data;
+        nonce = data;
     }).catch((err) => err);
-    
+
 }

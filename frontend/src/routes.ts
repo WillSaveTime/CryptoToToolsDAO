@@ -7,6 +7,7 @@ export default {
   auth: {
     root: () => '/auth',
     logIn: () => '/auth/log_in',
+    verify: () => '/auth/verify',
     logInWithNumio: () => '/auth/numio',
     signUp: () => '/auth/sign_up',
   },

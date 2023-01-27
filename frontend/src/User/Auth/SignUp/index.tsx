@@ -9,7 +9,7 @@ import style from './style.module.scss'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
-import { register } from 'services/auth.service'
+import { register, verifyEmail } from 'services/auth.service'
 
 
 const ThanksPage = () =>
@@ -33,6 +33,7 @@ export default () => {
     const res: any = await register(firstName, lastName, email, password, conPassword);
     if (res._id) {
       setRegistered(true)
+      verifyEmail(res._id, firstName, lastName, email)
     } else {
       Object.keys(res).forEach((key, index) => {
         toast.warning(
