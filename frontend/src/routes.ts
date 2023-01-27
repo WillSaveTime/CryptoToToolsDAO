@@ -8,5 +8,6 @@ export default {
     root: () => '/auth',
     logIn: () => '/auth/log_in',
     signUp: () => '/auth/sign_up',
+    thanksPage: () => '/auth/thanks_page'
   },
 }

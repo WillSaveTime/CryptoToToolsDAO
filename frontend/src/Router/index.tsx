@@ -10,6 +10,7 @@ import routes from 'routes'
 import authHeader from 'services/auth-header'
 import LogIn from 'User/Auth/LogIn'
 import SignUp from 'User/Auth/SignUp'
+import ThanksPage from 'User/Auth/ThanksPage'
 import history from './history'
 
 export default () => {
@@ -23,9 +24,11 @@ export default () => {
             <Route path={routes.auth.logIn()}>
               <LogIn setAccessToken={(str: string) => setAccessToken(str)} />
             </Route>
-            {/* <Route path={routes.auth.signUp()} component={SignUp} /> */}
             <Route path={routes.auth.signUp()}>
               <SignUp setAccessToken={(str: string) => setAccessToken(str)} />
+            </Route>
+            <Route path={routes.auth.thanksPage()}>
+              <ThanksPage setAccessToken={(str: string) => setAccessToken(str)} />
             </Route>
           </Switch>
         } />
