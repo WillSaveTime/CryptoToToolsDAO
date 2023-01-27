@@ -69,6 +69,10 @@ router.post('/login', (req, res) => {
                 errors.email = 'User not found'
                 return res.status(404).json(errors);
             }
+            if(!user.verify) {
+                errors.verify = "You didn't verified User"
+                return res.status(404).json(errors)
+            }
             bcrypt.compare(password, user.password)
                 .then(isMatch => {
                     if (isMatch) {
@@ -98,7 +102,6 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/change-password', passport.authenticate('jwt', { session: false }), (req, res) => {
-    console.log(req.body)
     const { errors, isValid } = validateChangePassword(req.body);
 
     if (!isValid) {
@@ -152,7 +155,7 @@ router.post('/sendMail', (req, res) => {
         from: 'support@cryptotools.live',
         to: 'cooker0910@gmail.com',
         subject: 'Confirm your email',
-        html: `<h2>Congratulations ${req.body.firstName} ${req.body.lastName}! You have successfully registered.</h2><a href="http://152.89.247.244:3000/verify/${req.body.id}" target="_blank" style="cursor: pointer"><button style="display: inline-block; padding: 0.3em 1.2em; margin: 0 0.3em 0.3em 0; border-radius: 2em; border: none; box-sizing: border-box; text-decoration: none; font-weight: 300; color: #FFFFFF; background-color: #4ef18f; text-align: center; transition: all 0.2s;">Click To Verify</button></a>`
+        html: `<h2>Congratulations ${req.body.firstName} ${req.body.lastName}! You have successfully registered.</h2><a href="http://152.89.247.244:5000/verify/${req.body.id}" target="_blank" style="cursor: pointer"><button style="display: inline-block; padding: 0.3em 1.2em; margin: 0 0.3em 0.3em 0; border-radius: 2em; border: none; box-sizing: border-box; text-decoration: none; font-weight: 300; color: #FFFFFF; background-color: #4ef18f; text-align: center; transition: all 0.2s;">Click To Verify</button></a>`
     }
     transporter.sendMail(message, async (err, info) => {
         if (err) 
@@ -161,5 +164,14 @@ router.post('/sendMail', (req, res) => {
             console.log('info', info)
     })
 });
+
+router.get(`/verify/${id}`, (req, res) => {
+    User.findById(id, (err, docs) => {
+        if (err) 
+            console.log('error', err)
+        else    
+            console.log('docs', docs)
+    })
+})
 
 module.exports = router;
