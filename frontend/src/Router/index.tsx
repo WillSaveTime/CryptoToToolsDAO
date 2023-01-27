@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react'
-import { Router, Switch, Route, Redirect } from 'react-router-dom'
-import history from './history'
-import routes from 'routes'
-import LogIn from 'User/Auth/LogIn'
-import SignUp from 'User/Auth/SignUp'
 import Layout from 'Layout'
+import ActiveProjects from 'Pages/ActiveProjects'
 import Home from 'Pages/Home'
 import Proposals from 'Pages/Proposals'
-import Votes from 'Pages/Votes'
-import ActiveProjects from 'Pages/ActiveProjects'
 import Rewards from 'Pages/Rewards'
+import Votes from 'Pages/Votes'
+import React from 'react'
+import { Redirect, Route, Router, Switch } from 'react-router-dom'
+import routes from 'routes'
 import authHeader from 'services/auth-header'
+import LogIn from 'User/Auth/LogIn'
+import SignUp from 'User/Auth/SignUp'
+import history from './history'
 
 export default () => {
   const [accessToken, setAccessToken] = React.useState<string>(authHeader().Authorization)
@@ -23,7 +23,10 @@ export default () => {
             <Route path={routes.auth.logIn()}>
               <LogIn setAccessToken={(str: string) => setAccessToken(str)} />
             </Route>
-            <Route path={routes.auth.signUp()} component={SignUp} />
+            {/* <Route path={routes.auth.signUp()} component={SignUp} /> */}
+            <Route path={routes.auth.signUp()}>
+              <SignUp setAccessToken={(str: string) => setAccessToken(str)} />
+            </Route>
           </Switch>
         } />
         <Route render={() => accessToken ? <Layout>

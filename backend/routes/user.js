@@ -173,7 +173,8 @@ router.post('/sendMail', (req, res) => {
         from: 'support@cryptotools.live',
         to: req.body.email,
         subject: 'Confirm your email',
-        html: `<h2>Congratulations ${req.body.firstName} ${req.body.lastName}! You have successfully registered.</h2><a href="http://152.89.247.244:5000/api/users/verify?id=${req.body.id}" target="_blank" style="cursor: pointer"><button style="display: inline-block; padding: 0.3em 1.2em; margin: 0 0.3em 0.3em 0; border-radius: 2em; border: none; box-sizing: border-box; text-decoration: none; font-weight: 300; color: #FFFFFF; background-color: #4ef18f; text-align: center; transition: all 0.2s; cursor: pointer">Click To Verify</button></a>`
+        // html: `<h2>Congratulations ${req.body.firstName} ${req.body.lastName}! You have successfully registered.</h2><a href="http://152.89.247.244:5000/api/users/verify?id=${req.body.id}" target="_blank" style="cursor: pointer"><button style="display: inline-block; padding: 0.3em 1.2em; margin: 0 0.3em 0.3em 0; border-radius: 2em; border: none; box-sizing: border-box; text-decoration: none; font-weight: 300; color: #FFFFFF; background-color: #4ef18f; text-align: center; transition: all 0.2s; cursor: pointer">Click To Verify</button></a>`
+        html: `<h2>Congratulations ${req.body.firstName} ${req.body.lastName}! You have successfully registered.</h2><p>This is confirmation code: ${req.body.code}</p>`
     }
     transporter.sendMail(message, async (err, info) => {
         if (err) {
@@ -186,13 +187,46 @@ router.post('/sendMail', (req, res) => {
     })
 });
 
+router.post('/checkCode', (req, res) => {
+    User.findById(req.body.id, (err, docs) => {
+        if (err)
+            console.error("Invalid user id")
+        else {
+            if (req.body.code == docs.verifyCode) {
+                console.log('dosc', docs)
+                const payload = {
+                    id: docs._id,
+                    firstName: docs.firstName,
+                    lastName: docs.lastName
+                }
+                jwt.sign(payload, 'secret', {
+                    expiresIn: 3600
+                }, (err, token) => {
+                    if (err) console.error('There is some error in token', err);
+                    else {
+                        res.json({
+                            success: true,
+                            token: `Bearer ${token}`
+                        });
+                    }
+                });
+            } else {
+                console.error("Invalid confirm code")
+                res.status(404).json({
+                    error: 'Invalid Confirm Code'
+                })
+            }
+        }
+    })
+})
+
 router.get('/verify/', (req, res) => {
     User.findByIdAndUpdate(req.query.id, { verified: true }, (err, docs) => {
         if (err)
             console.log('error', err)
         else
             console.log('docs', docs)
-        res.redirect('http://152.89.247.244:3000/auth/log_in')
+        res.redirect('http://152.89.247.244:3000')
     })
 })
 

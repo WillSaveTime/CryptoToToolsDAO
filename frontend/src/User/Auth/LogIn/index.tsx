@@ -50,8 +50,9 @@ export default ({ setAccessToken }: Props) => {
       setAccessToken(res.token);
       setLoggedIn(true);
     } else {
-      console.log('error res', res)
-      toast.error('Email or password is not correct!');
+      Object.keys(res).forEach((key, index) => {
+        toast.warning(res[key]);
+      })
     }
   }
 

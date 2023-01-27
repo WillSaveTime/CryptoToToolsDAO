@@ -1,4 +1,4 @@
-const API_URL = 'http://152.89.247.244:5000/api/users/';
+const API_URL = 'http://localhost:5000/api/users/';
 
 export const login = async (
     email: string,
@@ -54,7 +54,7 @@ export const register = async (
     return result;
 }
 
-export const verifyEmail = async (
+export const sendConfirmCode = async (
     id: string,
     firstName: string,
     lastName: string,
@@ -70,6 +70,30 @@ export const verifyEmail = async (
     }
     let result;
     await fetch(API_URL + 'sendMail', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(info)
+    }).then((res) => {
+        return res.json()
+    }).then((data) => {
+        result = data;
+    }).catch((err) => result = err)
+    return result;
+}
+
+export const checkConfirmCode = async (
+    confirmCode: string,
+    id?: string
+) => {
+    const info = {
+        code: confirmCode,
+        id: id
+    }
+    let result;
+    await fetch(API_URL + 'checkCode', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',

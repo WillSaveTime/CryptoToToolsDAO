@@ -38,11 +38,15 @@
 
   .button {
     width: 296rem;
-    margin: 0 auto;
+    margin: 10rem auto;
   }
 }
 
 .verifyText {
   color: #434343;
-  margin-bottom: 121rem;
+  margin-bottom: 50rem;
+}
+.verifyCode {
+  display: flex;
+  justify-content: center;
 }
