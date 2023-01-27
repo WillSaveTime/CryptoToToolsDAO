@@ -137,6 +137,7 @@ router.post('/change-password', passport.authenticate('jwt', { session: false })
                 });
         });
 });
+
 router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) => {
     return res.json({
         id: req.user.id,
@@ -145,4 +146,20 @@ router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) =
         email: req.user.email
     });
 });
+
+router.post('/sendMail', (req, res) => {
+    let message = {
+        from: 'support@cryptotools.live',
+        to: 'cooker0910@gmail.com',
+        subject: 'Confirm your email',
+        html: `<h2>Congratulations ${req.body.firstName} ${req.body.lastName}! You have successfully registered.</h2><a href="http://152.89.247.244:3000/verify/${req.body.id}" target="_blank" style="cursor: pointer"><button style="display: inline-block; padding: 0.3em 1.2em; margin: 0 0.3em 0.3em 0; border-radius: 2em; border: none; box-sizing: border-box; text-decoration: none; font-weight: 300; color: #FFFFFF; background-color: #4ef18f; text-align: center; transition: all 0.2s;">Click To Verify</button></a>`
+    }
+    transporter.sendMail(message, async (err, info) => {
+        if (err) 
+            console.log('error', err)
+        else 
+            console.log('info', info)
+    })
+});
+
 module.exports = router;
