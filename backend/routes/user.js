@@ -166,7 +166,7 @@ router.post('/sendMail', (req, res) => {
 });
 
 router.get(`/verify/${id}`, (req, res) => {
-    User.findById(id, (err, docs) => {
+    User.findByIdAndUpdate(id, {verify: true}, (err, docs) => {
         if (err) 
             console.log('error', err)
         else    

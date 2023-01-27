@@ -46,10 +46,12 @@ export default ({ setAccessToken }: Props) => {
   const handleLogin = async () => {
     const res: any = await login(email, password);
     if (res.success) {
+      console.log('res', res)
       sessionStorage.setItem('user', JSON.stringify(res));
       setAccessToken(res.token);
       setLogined(true);
     } else {
+      console.log('error res', res)
       toast.error('Email or password is not correct!');
     }
   }

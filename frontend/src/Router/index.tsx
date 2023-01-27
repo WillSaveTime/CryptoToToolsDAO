@@ -15,7 +15,6 @@ import authHeader from 'services/auth-header'
 
 export default () => {
   const [accessToken, setAccessToken] = React.useState<string>(authHeader().Authorization)
-  console.log(accessToken)
 
   return (
     <Router history={history}>
