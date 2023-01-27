@@ -163,6 +163,12 @@ router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) =
 });
 
 router.post('/sendMail', (req, res) => {
+    User.findByIdAndUpdate(req.body.id, { verifyCode: req.body.code }, (err, docs) => {
+        if (err)
+            console.log('error', err)
+        else
+            console.log('docs', docs)
+    })
     let message = {
         from: 'support@cryptotools.live',
         to: req.body.email,

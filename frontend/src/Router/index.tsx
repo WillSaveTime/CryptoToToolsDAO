@@ -3,7 +3,6 @@ import { Router, Switch, Route, Redirect } from 'react-router-dom'
 import history from './history'
 import routes from 'routes'
 import LogIn from 'User/Auth/LogIn'
-import LogInWithMetamask from 'User/Auth/LogInWithMetamask'
 import SignUp from 'User/Auth/SignUp'
 import Layout from 'Layout'
 import Home from 'Pages/Home'
@@ -24,7 +23,6 @@ export default () => {
             <Route path={routes.auth.logIn()}>
               <LogIn setAccessToken={(str: string) => setAccessToken(str)} />
             </Route>
-            <Route path={routes.auth.logInWithNumio()} component={LogInWithMetamask} />
             <Route path={routes.auth.signUp()} component={SignUp} />
           </Switch>
         } />

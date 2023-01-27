@@ -19,7 +19,7 @@ type Props = {
 
 export default ({ setAccessToken }: Props) => {
   const dispatch = useDispatch();
-  const [logined, setLogined] = useState<boolean>(false);
+  const [logined, setLoggedIn] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isMetamaskInstalled, setIsMetamaskInstalled] = useState<boolean>(false);
@@ -39,17 +39,16 @@ export default ({ setAccessToken }: Props) => {
       setAccessToken(nonce.token);
       sessionStorage.setItem('user', JSON.stringify(nonce));
       dispatch(setWalletAddress(account));
-      setLogined(true);
+      setLoggedIn(true);
     }
   }, [account])
 
   const handleLogin = async () => {
     const res: any = await login(email, password);
     if (res.success) {
-      console.log('res', res)
       sessionStorage.setItem('user', JSON.stringify(res));
       setAccessToken(res.token);
-      setLogined(true);
+      setLoggedIn(true);
     } else {
       console.log('error res', res)
       toast.error('Email or password is not correct!');

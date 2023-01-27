@@ -23,7 +23,10 @@ const UserSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    verify: {
+    verifyCode: {
+        type: Number
+    },
+    verified: {
         type: Boolean
     }
 });

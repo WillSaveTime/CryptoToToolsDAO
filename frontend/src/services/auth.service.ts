@@ -58,13 +58,15 @@ export const verifyEmail = async (
     id: string,
     firstName: string,
     lastName: string,
-    email: string
+    email: string,
+    code: number
 ) => {
     const info = {
         id: id,
         firstName: firstName,
         lastName: lastName,
-        email: email
+        email: email,
+        code: code
     }
     let result;
     await fetch(API_URL + 'sendMail', {
