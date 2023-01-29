@@ -5,6 +5,10 @@ import { Title } from '../Shared'
 import Field from "Shared/Field"
 import Button from 'Shared/Button'
 import routes from 'routes'
+import Web3 from "web3"
+import { ethers } from "ethers";
+import Web3Modal from "web3modal"
+import WalletConnectProvider from "@walletconnect/web3-provider";
 import style from './style.module.scss'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -17,6 +21,19 @@ type Props = {
   setAccessToken: (val: string) => void
 }
 
+const INFURA_ID = '88b3ca144c6648df843909df0371ee08'
+const providerOptions = {
+  walletconnect: {
+    package: WalletConnectProvider,
+    infuraId: INFURA_ID
+  }
+}
+
+const web3Modal = new Web3Modal({
+  cacheProvider: true,
+  providerOptions
+})
+
 export default ({ setAccessToken }: Props) => {
   const dispatch = useDispatch();
   const [logined, setLoggedIn] = useState<boolean>(false);
@@ -24,6 +41,12 @@ export default ({ setAccessToken }: Props) => {
   const [password, setPassword] = useState<string>('');
   const [isMetamaskInstalled, setIsMetamaskInstalled] = useState<boolean>(false);
   const [account, setAccount] = useState<string | null>(null);
+  const [provider, setProvider] = useState<object | any>();
+  const [chainId, setChainId] = useState<number | null>();
+  const [library, setLibrary] = useState<any>();
+  const [error, setError] = useState<string | null>("");
+  const [message, setMessage] = useState<string>("");
+  const [network, setNetwork] = useState<number | null | undefined>();
 
   useEffect(() => {
     if ((window as any).ethereum) {
@@ -56,42 +79,142 @@ export default ({ setAccessToken }: Props) => {
     }
   }
 
-  const connectWallet = async (): Promise<void> => {
-    if (!isMetamaskInstalled) {
-      toast.error('Please install MetaMask!');
-      return
+  const connectWallet = async () => {
+    try {
+      const provider = await web3Modal.connect();
+      const library = new ethers.providers.Web3Provider(provider);
+      const accounts = await library.listAccounts();
+      const network = await library.getNetwork();
+      setProvider(provider);
+      if (accounts) setAccount(accounts[0]);
+      setChainId(network.chainId);
+      setLibrary(library);
+    } catch (error: any) {
+      setError(error);
     }
-    (window as any).ethereum
-      .request({
-        method: "eth_requestAccounts",
-      })
-      .then((accounts: string[]) => {
-        setAccount(accounts[0]);
-      })
-      .catch((error: any) => {
-        toast.error(`Something went wrong: ${error}`);
+  };
+
+  const handleNetwork = (e: any) => {
+    const id = e.target.value;
+    setNetwork(Number(id));
+  };
+
+  const handleInput = (e: any) => {
+    const msg = e.target.value;
+    setMessage(msg);
+  };
+
+  const switchNetwork = async () => {
+    try {
+      await library.provider.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: '0x38'  }]
       });
-    // check if the chain to connect to is installed
-    await (window as any).ethereum.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: '0x38' }], // chainId must be in hexadecimal numbers
-    }).catch(async (error: any) => {
-      if (error.code === 4902) {
-        await (window as any).ethereum.request({
-          method: 'wallet_addEthereumChain',
-          params: [
-            {
-              chainName: 'BNB Smart Chain',
-              chainId: '0x38',
-              rpcUrls: ['https://bsc-dataseed.binance.org/']
-            }
-          ]
-        });
-      } else {
-        toast.error(`Something went wrong: ${error}`);
+    } catch (switchError: any) {
+      if (switchError.code === 4902) {
+        try {
+          await library.provider.request({
+            method: "wallet_addEthereumChain",
+            params: [
+              {
+                chainName: 'BNB Smart Chain',
+                chainId: '0x38',
+                rpcUrls: ['https://bsc-dataseed.binance.org/']
+              }
+            ]
+          });
+        } catch (error: any) {
+          setError(error);
+        }
       }
+    }
+  };
+
+  const refreshState = () => {
+    setAccount("");
+    setChainId(null);
+    setNetwork(null);
+    setMessage("");
+  };
+
+  const disconnect = async () => {
+    await web3Modal.clearCachedProvider();
+    refreshState();
+    toast({
+      title: "Disconnected.",
+      description: "You are disconnected from the App.",
+      status: "success",
+      duration: 3000,
+      isClosable: true
     });
-  }
+  };
+
+  useEffect(() => {
+    if (provider?.on) {
+      const handleAccountsChanged = (accounts: string[]) => {
+        console.log("accountsChanged", accounts);
+        if (accounts) setAccount(accounts[0]);
+      };
+
+      const handleChainChanged = (_hexChainId: number) => {
+        setChainId(_hexChainId);
+      };
+
+      const handleDisconnect = () => {
+        console.log("disconnect", error);
+        disconnect();
+      };
+
+      provider.on("accountsChanged", handleAccountsChanged);
+      provider.on("chainChanged", handleChainChanged);
+      provider.on("disconnect", handleDisconnect);
+
+      return () => {
+        if (provider.removeListener) {
+          provider.removeListener("accountsChanged", handleAccountsChanged);
+          provider.removeListener("chainChanged", handleChainChanged);
+          provider.removeListener("disconnect", handleDisconnect);
+        }
+      };
+    }
+  }, [provider]);
+
+  // const connectWallet = async (): Promise<void> => {
+  //   if (!isMetamaskInstalled) {
+  //     toast.error('Please install MetaMask!');
+  //     return
+  //   }
+  //   (window as any).ethereum
+  //     .request({
+  //       method: "eth_requestAccounts",
+  //     })
+  //     .then((accounts: string[]) => {
+  //       setAccount(accounts[0]);
+  //     })
+  //     .catch((error: any) => {
+  //       toast.error(`Something went wrong: ${error}`);
+  //     });
+  //   // check if the chain to connect to is installed
+  //   await (window as any).ethereum.request({
+  //     method: 'wallet_switchEthereumChain',
+  //     params: [{ chainId: '0x38' }], // chainId must be in hexadecimal numbers
+  //   }).catch(async (error: any) => {
+  //     if (error.code === 4902) {
+  //       await (window as any).ethereum.request({
+  //         method: 'wallet_addEthereumChain',
+  //         params: [
+  //           {
+  //             chainName: 'BNB Smart Chain',
+  //             chainId: '0x38',
+  //             rpcUrls: ['https://bsc-dataseed.binance.org/']
+  //           }
+  //         ]
+  //       });
+  //     } else {
+  //       toast.error(`Something went wrong: ${error}`);
+  //     }
+  //   });
+  // }
 
   if (logined)
     return <Redirect to={routes.root()} />
