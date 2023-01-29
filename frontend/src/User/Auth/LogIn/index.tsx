@@ -42,7 +42,7 @@ export default ({ setAccessToken }: Props) => {
   const [account, setAccount] = useState<string | null>(null);
   const [provider, setProvider] = useState<object | any>();
   const [chainId, setChainId] = useState<number | null>();
-  const [library, setLibrary] = useState<any>();
+  const [library, setLibrary] = useState<object>();
   const [message, setMessage] = useState<string>("");
   const [network, setNetwork] = useState<number | null | undefined>();
 
@@ -102,31 +102,31 @@ export default ({ setAccessToken }: Props) => {
     setMessage(msg);
   };
 
-  // const switchNetwork = async () => {
-  //   try {
-  //     await library.provider.request({
-  //       method: "wallet_switchEthereumChain",
-  //       params: [{ chainId: '0x38'  }]
-  //     });
-  //   } catch (switchError: unknown) {
-  //     if (switchError.code === 4902) {
-  //       try {
-  //         await library.provider.request({
-  //           method: "wallet_addEthereumChain",
-  //           params: [
-  //             {
-  //               chainName: 'BNB Smart Chain',
-  //               chainId: '0x38',
-  //               rpcUrls: ['https://bsc-dataseed.binance.org/']
-  //             }
-  //           ]
-  //         });
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     }
-  //   }
-  // };
+  const switchNetwork = async () => {
+    // try {
+    //   await library.provider.request({
+    //     method: "wallet_switchEthereumChain",
+    //     params: [{ chainId: '0x38'  }]
+    //   });
+    // } catch (switchError: any) {
+    //   if (switchError.code === 4902) {
+    //     try {
+    //       await library.provider.request({
+    //         method: "wallet_addEthereumChain",
+    //         params: [
+    //           {
+    //             chainName: 'BNB Smart Chain',
+    //             chainId: '0x38',
+    //             rpcUrls: ['https://bsc-dataseed.binance.org/']
+    //           }
+    //         ]
+    //       });
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //   }
+    // }
+  };
 
   const refreshState = () => {
     setAccount("");
