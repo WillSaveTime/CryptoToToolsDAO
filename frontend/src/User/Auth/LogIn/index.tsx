@@ -5,7 +5,6 @@ import { Title } from '../Shared'
 import Field from "Shared/Field"
 import Button from 'Shared/Button'
 import routes from 'routes'
-import Web3 from "web3"
 import { ethers } from "ethers";
 import Web3Modal from "web3modal"
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -89,8 +88,8 @@ export default ({ setAccessToken }: Props) => {
       if (accounts) setAccount(accounts[0]);
       setChainId(network.chainId);
       setLibrary(library);
-    } catch (error: any) {
-      setError(error);
+    } catch (error) {
+      console.log('error', error);
     }
   };
 
@@ -104,31 +103,31 @@ export default ({ setAccessToken }: Props) => {
     setMessage(msg);
   };
 
-  const switchNetwork = async () => {
-    try {
-      await library.provider.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: '0x38'  }]
-      });
-    } catch (switchError: any) {
-      if (switchError.code === 4902) {
-        try {
-          await library.provider.request({
-            method: "wallet_addEthereumChain",
-            params: [
-              {
-                chainName: 'BNB Smart Chain',
-                chainId: '0x38',
-                rpcUrls: ['https://bsc-dataseed.binance.org/']
-              }
-            ]
-          });
-        } catch (error: any) {
-          setError(error);
-        }
-      }
-    }
-  };
+  // const switchNetwork = async () => {
+  //   try {
+  //     await library.provider.request({
+  //       method: "wallet_switchEthereumChain",
+  //       params: [{ chainId: '0x38'  }]
+  //     });
+  //   } catch (switchError: any) {
+  //     if (switchError.code === 4902) {
+  //       try {
+  //         await library.provider.request({
+  //           method: "wallet_addEthereumChain",
+  //           params: [
+  //             {
+  //               chainName: 'BNB Smart Chain',
+  //               chainId: '0x38',
+  //               rpcUrls: ['https://bsc-dataseed.binance.org/']
+  //             }
+  //           ]
+  //         });
+  //       } catch (error: any) {
+  //         setError(error);
+  //       }
+  //     }
+  //   }
+  // };
 
   const refreshState = () => {
     setAccount("");
