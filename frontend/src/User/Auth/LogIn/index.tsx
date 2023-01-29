@@ -43,7 +43,6 @@ export default ({ setAccessToken }: Props) => {
   const [provider, setProvider] = useState<object | any>();
   const [chainId, setChainId] = useState<number | null>();
   const [library, setLibrary] = useState<any>();
-  const [error, setError] = useState<string | null>("");
   const [message, setMessage] = useState<string>("");
   const [network, setNetwork] = useState<number | null | undefined>();
 
@@ -109,7 +108,7 @@ export default ({ setAccessToken }: Props) => {
   //       method: "wallet_switchEthereumChain",
   //       params: [{ chainId: '0x38'  }]
   //     });
-  //   } catch (switchError: any) {
+  //   } catch (switchError: unknown) {
   //     if (switchError.code === 4902) {
   //       try {
   //         await library.provider.request({
@@ -122,8 +121,8 @@ export default ({ setAccessToken }: Props) => {
   //             }
   //           ]
   //         });
-  //       } catch (error: any) {
-  //         setError(error);
+  //       } catch (error) {
+  //         console.log(error);
   //       }
   //     }
   //   }
@@ -160,7 +159,7 @@ export default ({ setAccessToken }: Props) => {
       };
 
       const handleDisconnect = () => {
-        console.log("disconnect", error);
+        console.log("disconnect");
         disconnect();
       };
 
