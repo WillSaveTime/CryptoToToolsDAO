@@ -38,19 +38,12 @@ export default ({ setAccessToken }: Props) => {
   const [logined, setLoggedIn] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [isMetamaskInstalled, setIsMetamaskInstalled] = useState<boolean>(false);
   const [account, setAccount] = useState<string | null>(null);
   const [provider, setProvider] = useState<object | any>();
   const [chainId, setChainId] = useState<number | null>();
   const [library, setLibrary] = useState<object>();
   const [message, setMessage] = useState<string>("");
   const [network, setNetwork] = useState<number | null | undefined>();
-
-  useEffect(() => {
-    if ((window as any).ethereum) {
-      setIsMetamaskInstalled(true);
-    }
-  }, []);
 
   useEffect(() => {
     if (account) {
@@ -80,13 +73,14 @@ export default ({ setAccessToken }: Props) => {
   const connectWallet = async () => {
     try {
       const provider = await web3Modal.connect();
-      const library = new ethers.providers.Web3Provider(provider);
-      const accounts = await library.listAccounts();
-      const network = await library.getNetwork();
-      setProvider(provider);
+      const web3Provider = new ethers.providers.Web3Provider(provider);
+      const accounts = await web3Provider.listAccounts();
+      const network = await web3Provider.getNetwork();
       if (accounts) setAccount(accounts[0]);
+      setProvider(provider);
       setChainId(network.chainId);
-      setLibrary(library);
+      setLibrary(web3Provider);
+      if(network.chainId != 56) switchNetwork()
     } catch (error) {
       console.log('error', error);
     }
@@ -176,43 +170,6 @@ export default ({ setAccessToken }: Props) => {
       };
     }
   }, [provider]);
-
-  // const connectWallet = async (): Promise<void> => {
-  //   if (!isMetamaskInstalled) {
-  //     toast.error('Please install MetaMask!');
-  //     return
-  //   }
-  //   (window as any).ethereum
-  //     .request({
-  //       method: "eth_requestAccounts",
-  //     })
-  //     .then((accounts: string[]) => {
-  //       setAccount(accounts[0]);
-  //     })
-  //     .catch((error: any) => {
-  //       toast.error(`Something went wrong: ${error}`);
-  //     });
-  //   // check if the chain to connect to is installed
-  //   await (window as any).ethereum.request({
-  //     method: 'wallet_switchEthereumChain',
-  //     params: [{ chainId: '0x38' }], // chainId must be in hexadecimal numbers
-  //   }).catch(async (error: any) => {
-  //     if (error.code === 4902) {
-  //       await (window as any).ethereum.request({
-  //         method: 'wallet_addEthereumChain',
-  //         params: [
-  //           {
-  //             chainName: 'BNB Smart Chain',
-  //             chainId: '0x38',
-  //             rpcUrls: ['https://bsc-dataseed.binance.org/']
-  //           }
-  //         ]
-  //       });
-  //     } else {
-  //       toast.error(`Something went wrong: ${error}`);
-  //     }
-  //   });
-  // }
 
   if (logined)
     return <Redirect to={routes.root()} />

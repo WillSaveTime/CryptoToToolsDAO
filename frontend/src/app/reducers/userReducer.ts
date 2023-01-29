@@ -5,7 +5,7 @@ export interface UserState {
   firstName: string,
   lastName: string,
   email: string,
-  walletAddress: string
+  walletAddress: string,
 }
 
 const initialState: UserState = {
