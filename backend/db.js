@@ -1,3 +1,3 @@
 module.exports = {
-  DB: 'mongodb://127.0.0.1:27017/auth'
+  DB: 'mongodb://152.89.247.244:27017/auth'
 }

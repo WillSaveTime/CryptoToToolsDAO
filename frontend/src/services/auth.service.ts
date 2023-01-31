@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api/users/';
+const API_URL = 'http://152.89.247.244:5000/api/users/';
 
 export const login = async (
     email: string,

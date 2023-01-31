@@ -2,51 +2,43 @@ import authHeader from "./auth-header";
 
 const API_URL = 'http://152.89.247.244:5000/api/users/';
 
-export const getPublicContent = () => {
-    return fetch(API_URL + 'all', {
+export const getPublicContent = async () => {
+    const response = await fetch(API_URL + 'all', {
         method: 'get',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
-    })
-    .then((response: any) => {
-        return response.json();
     });
+    return response.json();
 }
 
-export const getUserBoard = () => {
-    return fetch(API_URL + 'me', {
+export const getUserBoard = async () => {
+    const response = await fetch(API_URL + 'me', {
         method: 'get',
         headers: authHeader()
-    })
-    .then((response: any) => {
-        return response.json();
     });
+    return response.json();
 }
 
-export const getModeratorBoard = () => {
-    return fetch(API_URL + 'mod', {
+export const getModeratorBoard = async () => {
+    const response = await fetch(API_URL + 'mod', {
         method: 'get',
         headers: authHeader()
-    })
-    .then((response: any) => {
-        return response.json();
     });
+    return response.json();
 }
 
-export const getAdminBoard = () => {
-    return fetch(API_URL + 'admin', {
+export const getAdminBoard = async () => {
+    const response = await fetch(API_URL + 'admin', {
         method: 'get',
         headers: authHeader()
-    })
-    .then((response: any) => {
-        return response.json();
     });
+    return response.json();
 }
 
 
-export const changePassword = (
+export const changePassword = async (
     email: string,
     current_password: string,
     password: string,
@@ -58,7 +50,7 @@ export const changePassword = (
         password,
         password_confirm
     }
-    return fetch(API_URL + 'change-password', {
+    const response = await fetch(API_URL + 'change-password', {
         method: 'POST',
         headers: {
             ...authHeader(),
@@ -66,8 +58,6 @@ export const changePassword = (
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(info)
-    })
-    .then((response: any) => {
-        return response.json();
     });
+    return response.json();
 }
