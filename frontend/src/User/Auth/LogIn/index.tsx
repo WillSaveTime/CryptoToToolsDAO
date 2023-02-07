@@ -97,29 +97,29 @@ export default ({ setAccessToken }: Props) => {
   };
 
   const switchNetwork = async () => {
-    // try {
-    //   await library.provider.request({
-    //     method: "wallet_switchEthereumChain",
-    //     params: [{ chainId: '0x38'  }]
-    //   });
-    // } catch (switchError: any) {
-    //   if (switchError.code === 4902) {
-    //     try {
-    //       await library.provider.request({
-    //         method: "wallet_addEthereumChain",
-    //         params: [
-    //           {
-    //             chainName: 'BNB Smart Chain',
-    //             chainId: '0x38',
-    //             rpcUrls: ['https://bsc-dataseed.binance.org/']
-    //           }
-    //         ]
-    //       });
-    //     } catch (error) {
-    //       console.log(error);
-    //     }
-    //   }
-    // }
+    try {
+      await library.provider.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: '0x38'  }]
+      });
+    } catch (switchError: any) {
+      if (switchError.code === 4902) {
+        try {
+          await library.provider.request({
+            method: "wallet_addEthereumChain",
+            params: [
+              {
+                chainName: 'BNB Smart Chain',
+                chainId: '0x38',
+                rpcUrls: ['https://bsc-dataseed.binance.org/']
+              }
+            ]
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
   };
 
   const refreshState = () => {
