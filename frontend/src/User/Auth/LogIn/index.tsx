@@ -20,7 +20,7 @@ type Props = {
   setAccessToken: (val: string) => void
 }
 
-const INFURA_ID = '88b3ca144c6648df843909df0371ee08'
+const INFURA_ID = '0e42c582d71b4ba5a8750f688fce07da'
 const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider,
@@ -29,6 +29,7 @@ const providerOptions = {
 }
 
 const web3Modal = new Web3Modal({
+  network: 'mainnet',
   cacheProvider: true,
   providerOptions
 })
@@ -82,7 +83,6 @@ export default ({ setAccessToken }: Props) => {
       setLibrary(web3Provider);
       if(network.chainId != 56) switchNetwork()
     } catch (error) {
-      console.log('error', error);
     }
   };
 
@@ -97,29 +97,29 @@ export default ({ setAccessToken }: Props) => {
   };
 
   const switchNetwork = async () => {
-    try {
-      await library.provider.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: '0x38'  }]
-      });
-    } catch (switchError: any) {
-      if (switchError.code === 4902) {
-        try {
-          await library.provider.request({
-            method: "wallet_addEthereumChain",
-            params: [
-              {
-                chainName: 'BNB Smart Chain',
-                chainId: '0x38',
-                rpcUrls: ['https://bsc-dataseed.binance.org/']
-              }
-            ]
-          });
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    }
+    // try {
+    //   await library.provider.request({
+    //     method: "wallet_switchEthereumChain",
+    //     params: [{ chainId: '0x38'  }]
+    //   });
+    // } catch (switchError: any) {
+    //   if (switchError.code === 4902) {
+    //     try {
+    //       await library.provider.request({
+    //         method: "wallet_addEthereumChain",
+    //         params: [
+    //           {
+    //             chainName: 'BNB Smart Chain',
+    //             chainId: '0x38',
+    //             rpcUrls: ['https://bsc-dataseed.binance.org/']
+    //           }
+    //         ]
+    //       });
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //   }
+    // }
   };
 
   const refreshState = () => {
