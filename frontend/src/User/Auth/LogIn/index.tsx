@@ -73,8 +73,8 @@ export default ({ setAccessToken }: Props) => {
 
   const connectWallet = async () => {
     try {
-      console.log(1)
       const provider = await web3Modal.connect();
+      console.log(11)
       const web3Provider = new ethers.providers.Web3Provider(provider);
       const accounts = await web3Provider.listAccounts();
       const network = await web3Provider.getNetwork();
@@ -84,6 +84,7 @@ export default ({ setAccessToken }: Props) => {
       setLibrary(web3Provider);
       if(network.chainId != 56) switchNetwork()
     } catch (error) {
+      console.log('error', error)
     }
   };
 
