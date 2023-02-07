@@ -73,6 +73,7 @@ export default ({ setAccessToken }: Props) => {
 
   const connectWallet = async () => {
     try {
+      console.log(1)
       const provider = await web3Modal.connect();
       const web3Provider = new ethers.providers.Web3Provider(provider);
       const accounts = await web3Provider.listAccounts();
